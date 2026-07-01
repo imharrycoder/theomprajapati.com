@@ -3,6 +3,9 @@ import { Link, Navigate, useParams } from 'react-router-dom';
 import { ArrowLeft, CalendarDays, Clock3, LockKeyhole, Share2, UserRound, Rocket, Code2, Search, Database, Globe2, LayoutDashboard } from 'lucide-react';
 import BlogCard from '../components/BlogCard.jsx';
 import SectionHeading from '../components/SectionHeading.jsx';
+import { blogPosts as staticBlogPosts, getBlogBySlug, getRelatedPosts } from '../data/content.js';
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
 
 const iconMap = {
   'Creator Platform': Rocket,
@@ -24,15 +27,22 @@ function BlogPost() {
     const fetchPost = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`http://localhost:5000/blogPosts?slug=${slug}`);
-        const data = await response.json();
-        if (data.length > 0) {
-          setPost(data[0]);
-        } else {
-          setPost(null);
+
+        if (API_BASE_URL) {
+          const response = await fetch(`${API_BASE_URL}/blogPosts?slug=${slug}`);
+          if (!response.ok) throw new Error('Network response was not ok');
+          const data = await response.json();
+          if (data.length > 0) {
+            setPost(data[0]);
+            return;
+          }
         }
+
+        const fallbackPost = getBlogBySlug(slug);
+        setPost(fallbackPost || null);
       } catch (error) {
         console.error('Error fetching blog post:', error);
+        setPost(getBlogBySlug(slug) || null);
       } finally {
         setLoading(false);
       }
@@ -43,25 +53,7 @@ function BlogPost() {
 
   useEffect(() => {
     if (!post) return;
-
-    const fetchRelatedPosts = async () => {
-      try {
-        const response = await fetch('http://localhost:5000/blogPosts');
-        const allPosts = await response.json();
-        const related = allPosts
-          .filter(
-            (p) =>
-              p.slug !== post.slug &&
-              (p.category === post.category || p.tags.some((tag) => post.tags.includes(tag)))
-          )
-          .slice(0, 3);
-        setRelatedPosts(related);
-      } catch (error) {
-        console.error('Error fetching related posts:', error);
-      }
-    };
-
-    fetchRelatedPosts();
+    setRelatedPosts(getRelatedPosts(post.slug));
   }, [post]);
 
   if (loading) {

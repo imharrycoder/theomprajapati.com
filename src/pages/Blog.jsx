@@ -2,6 +2,9 @@ import { useEffect, useMemo, useState } from 'react';
 import { Filter, Search, SlidersHorizontal } from 'lucide-react';
 import BlogCard from '../components/BlogCard.jsx';
 import SectionHeading from '../components/SectionHeading.jsx';
+import { blogPosts as staticBlogPosts } from '../data/content.js';
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
 
 function Blog() {
   const [posts, setPosts] = useState([]);
@@ -12,13 +15,19 @@ function Blog() {
 
   useEffect(() => {
     const fetchPosts = async () => {
-      try {
-        const response = await fetch('http://localhost:5000/blogPosts');
-        const data = await response.json();
-        setPosts(data);
-      } catch (error) {
-        console.error('Error fetching blog posts:', error);
+      if (API_BASE_URL) {
+        try {
+          const response = await fetch(`${API_BASE_URL}/blogPosts`);
+          if (!response.ok) throw new Error('Network response was not ok');
+          const data = await response.json();
+          setPosts(data);
+          return;
+        } catch (error) {
+          console.error('Error fetching blog posts from API:', error);
+        }
       }
+
+      setPosts(staticBlogPosts);
     };
 
     fetchPosts();
