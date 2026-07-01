@@ -4,4 +4,6 @@ vite-dev.log
 vite-dev.err
 .DS_Store
 
+.env
+.env.local
 .vercel

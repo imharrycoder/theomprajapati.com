@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowRight, CalendarDays, Clock3, LockKeyhole } from 'lucide-react';
+import { ArrowRight, CalendarDays, Clock3, LockKeyhole, Rocket } from 'lucide-react';
 
 function BlogCard({ post, featured = false }) {
-  const Icon = post.icon;
+  const Icon = typeof post.icon === 'function' ? post.icon : Rocket;
 
   return (
     <motion.article
