@@ -1,12 +1,33 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, CheckCircle2, Play, Sparkles } from 'lucide-react';
 import BlogCard from '../components/BlogCard.jsx';
 import HeroSlider from '../components/HeroSlider.jsx';
 import SectionHeading from '../components/SectionHeading.jsx';
-import { blogPosts, metrics, services, upcomingProjects, videos } from '../data/content.js';
+import { blogPosts, metrics, services as staticServices, upcomingProjects, videos } from '../data/content.js';
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
 
 function Home() {
+  const [services, setServices] = useState(staticServices);
   const featuredPosts = blogPosts.slice(0, 3);
+
+  useEffect(() => {
+    const fetchServices = async () => {
+      if (!API_BASE_URL) return;
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/services`);
+        if (!response.ok) throw new Error('Network response was not ok');
+        const data = await response.json();
+        setServices(data);
+      } catch (error) {
+        console.error('Error fetching services from API:', error);
+      }
+    };
+
+    fetchServices();
+  }, []);
 
   return (
     <>
@@ -33,11 +54,16 @@ function Home() {
 
           <div className="grid gap-4 sm:grid-cols-2">
             {services.map((service) => {
-              const Icon = service.icon;
+              const Icon = service.icon || Sparkles;
               return (
-                <article key={service.title} className="surface rounded-lg p-5" data-aos="fade-up">
-                  <div className="grid h-12 w-12 place-items-center rounded-lg bg-[var(--surface-2)] text-[var(--accent)]">
-                    <Icon size={24} aria-hidden="true" />
+                <article key={service.id ?? service.title} className="surface rounded-lg p-5" data-aos="fade-up">
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="grid h-12 w-12 place-items-center rounded-lg bg-[var(--surface-2)] text-[var(--accent)]">
+                      <Icon size={24} aria-hidden="true" />
+                    </div>
+                    {service.category ? (
+                      <span className="tag text-[var(--muted)]">{service.category}</span>
+                    ) : null}
                   </div>
                   <h3 className="mt-5 text-lg font-black text-[var(--text)]">{service.title}</h3>
                   <p className="mt-3 text-sm leading-7 text-[var(--muted)]">{service.description}</p>

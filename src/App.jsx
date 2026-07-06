@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Route, Routes, useLocation } from 'react-router-dom';
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import AOS from 'aos';
+import { ToastContainer } from 'react-toastify';
 import Header from './components/Header.jsx';
 import Footer from './components/Footer.jsx';
 import LoadingScreen from './components/LoadingScreen.jsx';
@@ -10,7 +11,9 @@ import Blog from './pages/Blog.jsx';
 import BlogPost from './pages/BlogPost.jsx';
 import About from './pages/About.jsx';
 import Contact from './pages/Contact.jsx';
+import Login from './pages/Login.jsx';
 import NotFound from './pages/NotFound.jsx';
+import RequireAuth from './components/RequireAuth.jsx';
 
 const pageVariants = {
   initial: { opacity: 0, y: 16 },
@@ -34,6 +37,17 @@ function App() {
 
   return (
     <div className="min-h-screen bg-[var(--bg)] text-[var(--text)] transition-colors duration-300">
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
       <LoadingScreen isVisible={isLoading} />
       <Header />
       <main>
@@ -48,10 +62,39 @@ function App() {
           >
             <Routes location={location}>
               <Route path="/" element={<Home />} />
-              <Route path="/blog" element={<Blog />} />
-              <Route path="/blog/:slug" element={<BlogPost />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/contact" element={<Contact />} />
+              <Route
+                path="/blog"
+                element={
+                  <RequireAuth>
+                    <Blog />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="/blog/:slug"
+                element={
+                  <RequireAuth>
+                    <BlogPost />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="/about"
+                element={
+                  <RequireAuth>
+                    <About />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="/contact"
+                element={
+                  <RequireAuth>
+                    <Contact />
+                  </RequireAuth>
+                }
+              />
+              <Route path="/login" element={<Login />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </motion.div>

@@ -5,6 +5,7 @@ import AOS from 'aos';
 import 'aos/dist/aos.css';
 import App from './App.jsx';
 import './index.css';
+import 'react-toastify/dist/ReactToastify.css';
 
 AOS.init({
   duration: 700,
