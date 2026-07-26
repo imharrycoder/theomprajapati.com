@@ -8,6 +8,8 @@ import LocaleSelector from './header/LocaleSelector.jsx';
 import DateTime from './header/DateTime.jsx';
 import MobileMenu from './header/MobileMenu.jsx';
 
+import AuthStatus from './header/AuthStatus.jsx';
+
 const availableLocales = ['en-US', 'hi-IN', 'gu-IN', 'zh-CN'];
 
 function getInitialLocale() {
@@ -98,13 +100,20 @@ function Header() {
           <DateTime formattedDate={formattedDate} formattedTime={formattedTime} />
           <LocaleSelector locale={locale} setLocale={setLocale} />
           <ThemeToggle theme={theme} setTheme={setTheme} />
+          <div className="h-6 w-px bg-[var(--line)] mx-1" />
+          <AuthStatus />
         </div>
 
         {/* Mobile controls */}
-        <div className="flex items-center gap-2 xl:hidden">
-          <DateTime formattedDate={formattedDate} formattedTime={formattedTime} />
-          <LocaleSelector locale={locale} setLocale={setLocale} />
+        <div className="flex items-center gap-1 xl:hidden">
+          <div className="hidden md:block">
+            <DateTime formattedDate={formattedDate} formattedTime={formattedTime} />
+          </div>
+          <div className="hidden sm:block">
+            <LocaleSelector locale={locale} setLocale={setLocale} />
+          </div>
           <ThemeToggle theme={theme} setTheme={setTheme} />
+          <AuthStatus />
           <button
             className="icon-button focus-ring"
             type="button"

@@ -13,6 +13,7 @@ import About from './pages/About.jsx';
 import Contact from './pages/Contact.jsx';
 import Login from './pages/Login.jsx';
 import NotFound from './pages/NotFound.jsx';
+import Pricing from './pages/Pricing.jsx';
 import RequireAuth from './components/RequireAuth.jsx';
 import { LOADING_SCREEN_DURATION_MS } from './constants/animation.js';
 
@@ -95,6 +96,7 @@ function App() {
                   </RequireAuth>
                 }
               />
+              <Route path="/pricing" element={<Pricing />} />
               <Route path="/login" element={<Login />} />
               <Route path="*" element={<NotFound />} />
             </Routes>

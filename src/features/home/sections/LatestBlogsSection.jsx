@@ -1,7 +1,7 @@
 import { ArrowRight } from 'lucide-react';
-import BlogCard from '../../components/BlogCard.jsx';
-import SectionHeading from '../../components/SectionHeading.jsx';
-import SmartLink from '../../components/SmartLink.jsx';
+import BlogCard from '../../../components/BlogCard.jsx';
+import SectionHeading from '../../../components/SectionHeading.jsx';
+import SmartLink from '../../../components/SmartLink.jsx';
 
 const LatestBlogsSection = ({ section, posts }) => (
   <section className="section-band border-y border-[var(--line)] bg-[var(--surface-2)]/55">

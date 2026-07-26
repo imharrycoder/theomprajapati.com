@@ -6,6 +6,7 @@ import SectionHeading from './SectionHeading';
 
 function FeaturedVideos({ content = defaultSiteContent.featuredVideos }) {
   const [videos, setVideos] = useState([]);
+  const glowClasses = ['neon-glow-pink', 'neon-glow-cyan', 'neon-glow-yellow'];
 
   useEffect(() => {
     apiFetch('/videos/featured', { suppressToast: true })
@@ -16,14 +17,15 @@ function FeaturedVideos({ content = defaultSiteContent.featuredVideos }) {
   }, []);
 
   const socialLinks = [
-    { label: content.youtubeLabel, url: content.youtubeUrl, variant: 'btn-primary' },
+    { label: content.youtubeLabel, url: content.youtubeUrl, variant: 'btn-primary pulse-neon' },
     { label: content.facebookLabel, url: content.facebookUrl, variant: 'btn-secondary' },
     { label: content.instagramLabel, url: content.instagramUrl, variant: 'btn-secondary' },
   ].filter((link) => link.label && link.url);
 
   return (
-    <section className="section-band">
-      <div className="shell">
+    <section className="section-band relative">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[300px] bg-neon-pink opacity-5 blur-[120px] rounded-[100%] pointer-events-none" />
+      <div className="shell relative z-10">
         <SectionHeading
           eyebrow={content.eyebrow}
           title={content.title}
@@ -31,34 +33,42 @@ function FeaturedVideos({ content = defaultSiteContent.featuredVideos }) {
           align="center"
         />
 
-        <div className="mt-10 grid gap-5 lg:grid-cols-3">
-          {videos.map((video) => (
-            <div key={video.id} className="surface group overflow-hidden rounded-lg" data-aos="fade-up">
+        <div className="mt-14 grid gap-8 lg:grid-cols-3">
+          {videos.map((video, index) => (
+            <div 
+              key={video.id} 
+              className={`neon-card ${glowClasses[index % glowClasses.length]} group overflow-hidden`} 
+              data-aos="fade-up"
+              data-aos-delay={index * 100}
+            >
               <a href={video.videoUrl} target="_blank" rel="noopener noreferrer" className="relative block">
+                <div className="absolute inset-0 bg-gradient-to-t from-[var(--surface)] via-transparent to-transparent opacity-80 z-10" />
                 <img
                   src={video.thumbnail}
                   alt={video.title}
-                  className="aspect-video w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  className="aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
-                <div className="absolute inset-0 grid place-items-center bg-black/30">
-                  <span className="grid h-16 w-16 place-items-center rounded-full border-2 border-white bg-white/20 text-white backdrop-blur-sm transition-transform duration-300 group-hover:scale-110">
-                    <Play size={32} fill="currentColor" aria-hidden="true" />
+                <div className="absolute inset-0 grid place-items-center z-20">
+                  <span className="grid h-16 w-16 place-items-center rounded-full bg-[rgba(255,0,85,0.2)] border-2 border-[var(--neon-pink)] text-[var(--neon-pink)] shadow-[0_0_20px_rgba(255,0,85,0.4)] backdrop-blur-md transition-all duration-300 group-hover:scale-110 group-hover:bg-[var(--neon-pink)] group-hover:text-black">
+                    <Play size={28} fill="currentColor" aria-hidden="true" className="ml-1" />
                   </span>
                 </div>
               </a>
-              <div className="p-5">
-                <h3 className="text-lg font-black leading-tight text-[var(--text)]">{video.title}</h3>
-                <p className="mt-2 text-sm text-[var(--muted)]">{video.description}</p>
-                <p className="mt-3 text-xs font-bold text-[var(--muted)]">
-                  {new Date(video.publishDate).toLocaleDateString()}
-                </p>
+              <div className="p-6 relative z-20">
+                <h3 className="text-xl font-black leading-tight text-[var(--text)] mb-2">{video.title}</h3>
+                <p className="text-sm text-[var(--muted)] line-clamp-2">{video.description}</p>
+                <div className="mt-4 pt-4 border-t border-[var(--line)]">
+                  <p className="text-xs font-bold tracking-widest text-[var(--neon-cyan)] uppercase">
+                    {new Date(video.publishDate).toLocaleDateString()}
+                  </p>
+                </div>
               </div>
             </div>
           ))}
         </div>
 
         {socialLinks.length ? (
-          <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
+          <div className="mt-12 flex flex-col items-center justify-center gap-4 sm:flex-row relative z-10">
             {socialLinks.map((link) => (
               <a key={link.label} href={link.url} target="_blank" rel="noopener noreferrer" className={link.variant}>
                 {link.label}

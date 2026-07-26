@@ -23,9 +23,9 @@ import {
 export const navLinks = [
   { label: 'Home', path: '/' },
   { label: 'Blog', path: '/blog' },
+  { label: 'Pricing', path: '/pricing' },
   { label: 'About', path: '/about' },
-  { label: 'Contact', path: '/contact' },
-  { label: 'Login', path: '/login' },
+  { label: 'Contact', path: '/contact' }
 ];
 
 export const heroSlides = [
