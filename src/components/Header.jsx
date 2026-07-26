@@ -4,16 +4,26 @@ import { Menu, X } from 'lucide-react';
 import logoMark from '../../assets/theom-logo.png';
 import { navLinks } from '../data/content.js';
 import ThemeToggle from './header/ThemeToggle.jsx';
-import LanguageSelector from './header/LanguageSelector.jsx';
-import CountrySelector from './header/CountrySelector.jsx';
+import LocaleSelector from './header/LocaleSelector.jsx';
 import DateTime from './header/DateTime.jsx';
 import MobileMenu from './header/MobileMenu.jsx';
+
+const availableLocales = ['en-US', 'hi-IN', 'gu-IN', 'zh-CN'];
+
+function getInitialLocale() {
+  const savedLocale = localStorage.getItem('locale');
+  if (savedLocale && availableLocales.includes(savedLocale)) {
+    return savedLocale;
+  }
+  const browserLanguage = navigator.language;
+  // Find a matching locale or default to 'en-US'
+  return availableLocales.find((l) => l.startsWith(browserLanguage.split('-')[0])) || 'en-US';
+}
 
 function Header() {
   const [time, setTime] = useState(new Date());
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'dark');
-  const [language, setLanguage] = useState(() => localStorage.getItem('language') || 'en-US');
-  const [country, setCountry] = useState(() => localStorage.getItem('country') || 'IN');
+  const [locale, setLocale] = useState(getInitialLocale);
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
@@ -29,30 +39,29 @@ function Header() {
   }, [theme]);
 
   useEffect(() => {
-    document.documentElement.lang = language.split('-')[0];
-    localStorage.setItem('language', language);
-    localStorage.setItem('country', country);
-  }, [language, country]);
+    document.documentElement.lang = locale.split('-')[0];
+    localStorage.setItem('locale', locale);
+  }, [locale]);
 
   const formattedDate = useMemo(
     () =>
-      new Intl.DateTimeFormat(language, {
+      new Intl.DateTimeFormat(locale, {
         weekday: 'short',
         month: 'short',
         day: '2-digit',
         year: 'numeric',
       }).format(time),
-    [language, time],
+    [locale, time],
   );
 
   const formattedTime = useMemo(
     () =>
-      new Intl.DateTimeFormat(language, {
+      new Intl.DateTimeFormat(locale, {
         hour: '2-digit',
         minute: '2-digit',
         second: '2-digit',
       }).format(time),
-    [language, time],
+    [locale, time],
   );
 
   return (
@@ -84,36 +93,31 @@ function Header() {
           ))}
         </nav>
 
+        {/* Desktop controls */}
         <div className="hidden items-center gap-2 xl:flex">
           <DateTime formattedDate={formattedDate} formattedTime={formattedTime} />
-          <LanguageSelector language={language} setLanguage={setLanguage} />
-          <CountrySelector country={country} setCountry={setCountry} />
+          <LocaleSelector locale={locale} setLocale={setLocale} />
           <ThemeToggle theme={theme} setTheme={setTheme} />
         </div>
 
-        <button
-          className="icon-button focus-ring xl:hidden"
-          type="button"
-          onClick={() => setIsOpen((current) => !current)}
-          aria-label="Toggle menu"
-          title="Toggle menu"
-        >
-          {isOpen ? <X size={20} aria-hidden="true" /> : <Menu size={20} aria-hidden="true" />}
-        </button>
+        {/* Mobile controls */}
+        <div className="flex items-center gap-2 xl:hidden">
+          <DateTime formattedDate={formattedDate} formattedTime={formattedTime} />
+          <LocaleSelector locale={locale} setLocale={setLocale} />
+          <ThemeToggle theme={theme} setTheme={setTheme} />
+          <button
+            className="icon-button focus-ring"
+            type="button"
+            onClick={() => setIsOpen((current) => !current)}
+            aria-label="Toggle menu"
+            title="Toggle menu"
+          >
+            {isOpen ? <X size={20} aria-hidden="true" /> : <Menu size={20} aria-hidden="true" />}
+          </button>
+        </div>
       </div>
 
-      <MobileMenu
-        isOpen={isOpen}
-        setIsOpen={setIsOpen}
-        language={language}
-        setLanguage={setLanguage}
-        country={country}
-        setCountry={setCountry}
-        theme={theme}
-        setTheme={setTheme}
-        formattedDate={formattedDate}
-        formattedTime={formattedTime}
-      />
+      <MobileMenu isOpen={isOpen} setIsOpen={setIsOpen} />
     </header>
   );
 }

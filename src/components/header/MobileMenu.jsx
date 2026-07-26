@@ -1,22 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import { navLinks } from '../../data/content.js';
-import LanguageSelector from './LanguageSelector.jsx';
-import CountrySelector from './CountrySelector.jsx';
-import ThemeToggle from './ThemeToggle.jsx';
-import DateTime from './DateTime.jsx';
 
-function MobileMenu({
-  isOpen,
-  setIsOpen,
-  language,
-  setLanguage,
-  country,
-  setCountry,
-  theme,
-  setTheme,
-  formattedDate,
-  formattedTime,
-}) {
+function MobileMenu({ isOpen, setIsOpen }) {
   if (!isOpen) {
     return null;
   }
@@ -40,15 +25,6 @@ function MobileMenu({
             </NavLink>
           ))}
         </nav>
-
-        <div className="grid gap-2 sm:grid-cols-2">
-          <DateTime formattedDate={formattedDate} formattedTime={formattedTime} isMobile />
-          <div className="grid grid-cols-[1fr_1fr_auto] gap-2">
-            <LanguageSelector language={language} setLanguage={setLanguage} isMobile />
-            <CountrySelector country={country} setCountry={setCountry} isMobile />
-            <ThemeToggle theme={theme} setTheme={setTheme} />
-          </div>
-        </div>
       </div>
     </div>
   );

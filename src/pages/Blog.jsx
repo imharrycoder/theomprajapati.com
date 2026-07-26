@@ -2,9 +2,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { Filter, Search, SlidersHorizontal } from 'lucide-react';
 import BlogCard from '../components/BlogCard.jsx';
 import SectionHeading from '../components/SectionHeading.jsx';
+import { apiFetch } from '../utils/api.js';
 import { blogPosts as staticBlogPosts } from '../data/content.js';
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
 
 function Blog() {
   const [posts, setPosts] = useState([]);
@@ -15,16 +14,12 @@ function Blog() {
 
   useEffect(() => {
     const fetchPosts = async () => {
-      if (API_BASE_URL) {
-        try {
-          const response = await fetch(`${API_BASE_URL}/blogPosts`);
-          if (!response.ok) throw new Error('Network response was not ok');
-          const data = await response.json();
-          setPosts(data);
-          return;
-        } catch (error) {
-          console.error('Error fetching blog posts from API:', error);
-        }
+      try {
+        const data = await apiFetch('/blogPosts', { suppressToast: true });
+        setPosts(Array.isArray(data) && data.length ? data : staticBlogPosts);
+        return;
+      } catch {
+        // Error already displayed by apiFetch toast
       }
 
       setPosts(staticBlogPosts);

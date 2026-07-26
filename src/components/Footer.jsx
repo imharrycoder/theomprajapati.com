@@ -1,5 +1,5 @@
 import { Link, NavLink } from 'react-router-dom';
-import { Github, Linkedin, Mail, Rocket } from 'lucide-react';
+import { Facebook, Github, Instagram, Linkedin, Mail, Rocket } from 'lucide-react';
 import logoMark from '../../assets/theom-logo.png';
 import { navLinks } from '../data/content.js';
 
@@ -42,6 +42,26 @@ function Footer() {
             </a>
             <a className="icon-button focus-ring" href="https://www.linkedin.com/" aria-label="LinkedIn" title="LinkedIn">
               <Linkedin size={18} aria-hidden="true" />
+            </a>
+            <a
+              className="icon-button focus-ring"
+              href="https://www.instagram.com/the.omprajapati/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram"
+              title="Instagram"
+            >
+              <Instagram size={18} aria-hidden="true" />
+            </a>
+            <a
+              className="icon-button focus-ring"
+              href="https://www.facebook.com/the.omprajapati/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Facebook"
+              title="Facebook"
+            >
+              <Facebook size={18} aria-hidden="true" />
             </a>
           </div>
           <Link className="btn-primary mt-5 w-full sm:w-auto" to="/contact">

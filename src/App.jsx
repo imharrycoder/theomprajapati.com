@@ -14,6 +14,7 @@ import Contact from './pages/Contact.jsx';
 import Login from './pages/Login.jsx';
 import NotFound from './pages/NotFound.jsx';
 import RequireAuth from './components/RequireAuth.jsx';
+import { LOADING_SCREEN_DURATION_MS } from './constants/animation.js';
 
 const pageVariants = {
   initial: { opacity: 0, y: 16 },
@@ -26,7 +27,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const timer = window.setTimeout(() => setIsLoading(false), 900);
+    const timer = window.setTimeout(() => setIsLoading(false), LOADING_SCREEN_DURATION_MS);
     return () => window.clearTimeout(timer);
   }, []);
 

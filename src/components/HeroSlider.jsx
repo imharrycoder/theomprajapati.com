@@ -3,22 +3,35 @@ import { Link } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowRight, ChevronLeft, ChevronRight, Play, Sparkles } from 'lucide-react';
 import heroImage from '../../assets/creator-platform-hero.png';
-import { heroSlides } from '../data/content.js';
+import { defaultSiteContent } from '../data/siteContent.js';
+import { HERO_SLIDER_INTERVAL_MS } from '../constants/animation.js';
 import Typewriter from './Typewriter.jsx';
 
-function HeroSlider() {
+function HeroSlider({ content = defaultSiteContent.hero }) {
+  const slides = content.slides?.length ? content.slides : defaultSiteContent.hero.slides;
   const [active, setActive] = useState(0);
-  const slide = heroSlides[active];
+  const slide = slides[active] || slides[0];
+  const phrases = Array.isArray(slide.phrase)
+    ? slide.phrase
+    : String(slide.phrase || 'ideas')
+        .split(',')
+        .map((item) => item.trim())
+        .filter(Boolean);
+  const imageUrl = content.imageUrl || heroImage;
 
   useEffect(() => {
     const timer = window.setInterval(() => {
-      setActive((index) => (index + 1) % heroSlides.length);
-    }, 6200);
+      setActive((index) => (index + 1) % slides.length);
+    }, HERO_SLIDER_INTERVAL_MS);
     return () => window.clearInterval(timer);
-  }, []);
+  }, [slides.length]);
+
+  useEffect(() => {
+    setActive(0);
+  }, [slides]);
 
   const move = (direction) => {
-    setActive((index) => (index + direction + heroSlides.length) % heroSlides.length);
+    setActive((index) => (index + direction + slides.length) % slides.length);
   };
 
   return (
@@ -41,7 +54,7 @@ function HeroSlider() {
                 {slide.title}
               </h1>
               <p className="mt-5 text-2xl font-black text-[var(--text)] md:text-4xl">
-                Build for <Typewriter words={slide.phrase} />
+                Build for <Typewriter words={phrases} />
               </p>
               <p className="mt-6 max-w-2xl text-base leading-8 text-[var(--muted)] md:text-lg">{slide.body}</p>
             </motion.div>
@@ -73,7 +86,7 @@ function HeroSlider() {
         <div className="relative" data-aos="fade-left">
           <div className="scan-line overflow-hidden rounded-lg border border-[var(--line)] bg-[var(--surface-2)] shadow-glow">
             <img
-              src={heroImage}
+              src={imageUrl}
               alt="Futuristic creator platform dashboard with content, video, analytics, and product modules"
               className="aspect-[16/10] h-full w-full object-cover"
             />
@@ -83,7 +96,7 @@ function HeroSlider() {
               <ChevronLeft size={19} aria-hidden="true" />
             </button>
             <div className="flex justify-center gap-2">
-              {heroSlides.map((item, index) => (
+              {slides.map((item, index) => (
                 <button
                   key={item.eyebrow}
                   className={`h-2 rounded-full transition-all ${index === active ? 'w-8 bg-[var(--accent)]' : 'w-2 bg-[var(--surface-3)]'}`}

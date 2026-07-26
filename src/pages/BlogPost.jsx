@@ -3,9 +3,8 @@ import { Link, Navigate, useParams } from 'react-router-dom';
 import { ArrowLeft, CalendarDays, Clock3, LockKeyhole, Share2, UserRound, Rocket, Code2, Search, Database, Globe2, LayoutDashboard } from 'lucide-react';
 import BlogCard from '../components/BlogCard.jsx';
 import SectionHeading from '../components/SectionHeading.jsx';
-import { blogPosts as staticBlogPosts, getBlogBySlug, getRelatedPosts } from '../data/content.js';
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
+import { apiFetch } from '../utils/api.js';
+import { getBlogBySlug, getRelatedPosts } from '../data/content.js';
 
 const iconMap = {
   'Creator Platform': Rocket,
@@ -28,14 +27,10 @@ function BlogPost() {
       try {
         setLoading(true);
 
-        if (API_BASE_URL) {
-          const response = await fetch(`${API_BASE_URL}/blogPosts?slug=${slug}`);
-          if (!response.ok) throw new Error('Network response was not ok');
-          const data = await response.json();
-          if (data.length > 0) {
-            setPost(data[0]);
-            return;
-          }
+        const data = await apiFetch(`/blogPosts?slug=${encodeURIComponent(slug)}`, { suppressToast: true });
+        if (Array.isArray(data) && data.length > 0) {
+          setPost(data[0]);
+          return;
         }
 
         const fallbackPost = getBlogBySlug(slug);
