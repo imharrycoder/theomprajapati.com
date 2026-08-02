@@ -33,19 +33,18 @@ function Login() {
   const secondaryActionLink = isRegistering ? 'Sign in' : 'Register';
 
   const sendOtp = async () => {
-    if (!email && !contact) {
-      toast.error('Please provide email or contact before requesting OTP.');
+    if (!email) {
+      toast.error('Please provide your email before requesting OTP.');
       return;
     }
 
     setIsSubmitting(true);
     try {
-      const data = await apiFetch('/auth/send-otp', {
+      await apiFetch('/auth/send-otp', {
         method: 'POST',
         body: JSON.stringify({ email, contact }),
       });
       setOtpSent(true);
-      toast.info(`OTP sent. For local testing, use code: ${data.otp}`);
     } catch (err) {
       // error is already handled and displayed by apiFetch
     } finally {
@@ -121,6 +120,20 @@ function Login() {
                   />
                 </div>
                 <div>
+                  <label className="block text-sm font-semibold text-[var(--muted)]" htmlFor="reg-email">
+                    Email address
+                  </label>
+                  <input
+                    id="reg-email"
+                    type="email"
+                    value={email}
+                    onChange={(event) => setEmail(event.target.value)}
+                    required
+                    placeholder="you@example.com"
+                    className="mt-2 w-full rounded-2xl border border-[var(--line)] bg-[var(--surface)] px-4 py-3 text-sm text-[var(--text)] outline-none transition focus:border-[var(--accent)]"
+                  />
+                </div>
+                <div>
                   <label className="block text-sm font-semibold text-[var(--muted)]" htmlFor="contact">
                     Contact number
                   </label>
@@ -192,6 +205,24 @@ function Login() {
                     <option value="other">Other</option>
                   </select>
                 </div>
+
+                {/* Password for registration */}
+                <div>
+                  <label className="block text-sm font-semibold text-[var(--muted)]" htmlFor="reg-password">
+                    Password
+                  </label>
+                  <input
+                    id="reg-password"
+                    type="password"
+                    value={password}
+                    onChange={(event) => setPassword(event.target.value)}
+                    required
+                    placeholder="••••••••"
+                    className="mt-2 w-full rounded-2xl border border-[var(--line)] bg-[var(--surface)] px-4 py-3 text-sm text-[var(--text)] outline-none transition focus:border-[var(--accent)]"
+                  />
+                </div>
+
+                {/* OTP Section */}
                 <div className="grid gap-4 sm:grid-cols-[1fr_160px]">
                   <div>
                     <label className="block text-sm font-semibold text-[var(--muted)]" htmlFor="otp">
@@ -213,41 +244,49 @@ function Login() {
                     disabled={isSubmitting}
                     className="mt-6 rounded-2xl bg-[var(--surface-2)] px-4 py-3 text-sm font-bold text-[var(--text)] transition hover:bg-[var(--surface)] disabled:opacity-60"
                   >
-                    {isSubmitting ? 'Sending…' : 'Send OTP'}
+                    {isSubmitting ? 'Sending…' : otpSent ? 'Resend OTP' : 'Send OTP'}
                   </button>
                 </div>
+                {otpSent && (
+                  <p className="text-sm text-green-400">
+                    ✓ Verification code sent to your email. Check your inbox (and spam folder).
+                  </p>
+                )}
               </>
-            ) : null}
+            ) : (
+              <>
+                {/* Login: email or phone */}
+                <div>
+                  <label className="block text-sm font-semibold text-[var(--muted)]" htmlFor="email">
+                    Email or phone number
+                  </label>
+                  <input
+                    id="email"
+                    type="text"
+                    value={email}
+                    onChange={(event) => setEmail(event.target.value)}
+                    required
+                    placeholder="you@example.com or +91 98765 43210"
+                    className="mt-2 w-full rounded-2xl border border-[var(--line)] bg-[var(--surface)] px-4 py-3 text-sm text-[var(--text)] outline-none transition focus:border-[var(--accent)]"
+                  />
+                </div>
 
-            <div>
-              <label className="block text-sm font-semibold text-[var(--muted)]" htmlFor="email">
-                Email address
-              </label>
-              <input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-                required
-                placeholder="you@example.com"
-                className="mt-2 w-full rounded-2xl border border-[var(--line)] bg-[var(--surface)] px-4 py-3 text-sm text-[var(--text)] outline-none transition focus:border-[var(--accent)]"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-[var(--muted)]" htmlFor="password">
-                Password
-              </label>
-              <input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-                required
-                placeholder="••••••••"
-                className="mt-2 w-full rounded-2xl border border-[var(--line)] bg-[var(--surface)] px-4 py-3 text-sm text-[var(--text)] outline-none transition focus:border-[var(--accent)]"
-              />
-            </div>
+                <div>
+                  <label className="block text-sm font-semibold text-[var(--muted)]" htmlFor="password">
+                    Password
+                  </label>
+                  <input
+                    id="password"
+                    type="password"
+                    value={password}
+                    onChange={(event) => setPassword(event.target.value)}
+                    required
+                    placeholder="••••••••"
+                    className="mt-2 w-full rounded-2xl border border-[var(--line)] bg-[var(--surface)] px-4 py-3 text-sm text-[var(--text)] outline-none transition focus:border-[var(--accent)]"
+                  />
+                </div>
+              </>
+            )}
 
             <button
               type="submit"
@@ -267,6 +306,8 @@ function Login() {
               type="button"
               onClick={() => {
                 setIsRegistering(!isRegistering);
+                setOtpSent(false);
+                setOtp('');
               }}
               className="font-bold text-[var(--accent)] hover:text-[var(--text)]"
             >

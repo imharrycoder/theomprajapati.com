@@ -15,6 +15,7 @@ import Login from './pages/Login.jsx';
 import NotFound from './pages/NotFound.jsx';
 import Pricing from './pages/Pricing.jsx';
 import ProjectCost from './pages/ProjectCost.jsx';
+import Settings from './pages/Settings.jsx';
 import RequireAuth from './components/RequireAuth.jsx';
 import { LOADING_SCREEN_DURATION_MS } from './constants/animation.js';
 
@@ -100,6 +101,14 @@ function App() {
               <Route path="/pricing" element={<Pricing />} />
               <Route path="/project-cost" element={<ProjectCost />} />
               <Route path="/login" element={<Login />} />
+              <Route
+                path="/settings"
+                element={
+                  <RequireAuth>
+                    <Settings />
+                  </RequireAuth>
+                }
+              />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </motion.div>
