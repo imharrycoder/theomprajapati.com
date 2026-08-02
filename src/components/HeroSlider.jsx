@@ -65,6 +65,10 @@ function HeroSlider({ content = defaultSiteContent.hero }) {
               {slide.cta}
               <ArrowRight size={18} aria-hidden="true" />
             </Link>
+            <Link className="btn-primary focus-ring pulse-neon" to="/project-cost">
+              Get AI Project Cost
+              <Sparkles size={18} aria-hidden="true" />
+            </Link>
             <Link className="btn-secondary focus-ring" to="/about">
               View Skill Set
             </Link>
