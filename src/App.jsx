@@ -82,14 +82,7 @@ function App() {
                   </RequireAuth>
                 }
               />
-              <Route
-                path="/about"
-                element={
-                  <RequireAuth>
-                    <About />
-                  </RequireAuth>
-                }
-              />
+              <Route path="/about" element={<About />} />
               <Route
                 path="/contact"
                 element={
