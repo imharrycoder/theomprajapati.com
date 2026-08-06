@@ -4,8 +4,9 @@ import {
   FaReact, FaNodeJs, FaHtml5, FaCss3Alt, FaGithub, FaWordpress, FaShopify, FaDatabase 
 } from 'react-icons/fa';
 import { 
-  SiNextdotjs, SiTailwindcss, SiJavascript, SiTypescript, SiMysql, SiMongodb, SiOpenai, SiGoogleanalytics, SiHostinger, SiNetlify, SiVercel, SiGooglecloud, SiNestjs, SiSqlite
+  SiNextdotjs, SiTailwindcss, SiJavascript, SiTypescript, SiMysql, SiMongodb, SiGoogleanalytics, SiHostinger, SiNetlify, SiVercel, SiGooglecloud, SiNestjs, SiSqlite
 } from 'react-icons/si';
+import { BsOpenai } from 'react-icons/bs';
 import { Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import SectionHeading from '../components/SectionHeading.jsx';
@@ -26,7 +27,7 @@ function getTechIcon(name) {
   if (n.includes('mongo')) return <SiMongodb />;
   if (n.includes('sqlite')) return <SiSqlite />;
   if (n.includes('nest')) return <SiNestjs />;
-  if (n.includes('open') || n.includes('ai')) return <SiOpenai />;
+  if (n.includes('open') || n.includes('ai')) return <BsOpenai />;
   if (n.includes('analy')) return <SiGoogleanalytics />;
   if (n.includes('word')) return <FaWordpress />;
   if (n.includes('shop')) return <FaShopify />;
