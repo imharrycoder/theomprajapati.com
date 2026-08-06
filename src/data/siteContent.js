@@ -41,7 +41,7 @@ export const defaultSiteContent = {
     title: 'I build digital products.',
     description: 'From web development and digital services to creative solutions, I provide the expertise to bring your vision to life.',
     cta: 'Discover More',
-    ctaPath: '/about',
+    ctaPath: '/services',
   },
   technologies: {
     enabled: true,

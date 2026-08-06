@@ -33,7 +33,7 @@ function Home() {
       .then((data) => setSiteContent(mergeSiteContent(defaultSiteContent, data)))
       .catch(() => setSiteContent(defaultSiteContent));
 
-    apiFetch('/services', { suppressToast: true })
+    apiFetch('/services?home=true', { suppressToast: true })
       .then((data) => {
         if (Array.isArray(data) && data.length) setServices(data);
       })

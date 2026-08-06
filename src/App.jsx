@@ -10,6 +10,7 @@ import Home from './pages/Home.jsx';
 import Blog from './pages/Blog.jsx';
 import BlogPost from './pages/BlogPost.jsx';
 import About from './pages/About.jsx';
+import ServicesPage from './pages/ServicesPage.jsx';
 import Contact from './pages/Contact.jsx';
 import Login from './pages/Login.jsx';
 import NotFound from './pages/NotFound.jsx';
@@ -83,6 +84,7 @@ function App() {
                 }
               />
               <Route path="/about" element={<About />} />
+              <Route path="/services" element={<ServicesPage />} />
               <Route
                 path="/contact"
                 element={
