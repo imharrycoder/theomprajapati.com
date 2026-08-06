@@ -10,6 +10,7 @@ function Settings() {
 
   // Profile state
   const [name, setName] = useState('');
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [profilePhoto, setProfilePhoto] = useState(null);
   const [previewPhoto, setPreviewPhoto] = useState(null);
@@ -37,6 +38,7 @@ function Settings() {
     apiFetch('/users/me', { suppressToast: true })
       .then((data) => {
         setName(data.name || '');
+        setUsername(data.username || '');
         setEmail(data.email || '');
         setContact(data.contact || '');
         setProfilePhoto(data.profilePhoto || null);
@@ -61,15 +63,41 @@ function Settings() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (file.size > 200 * 1024) {
-      toast.error('Photo must be under 200KB. Please choose a smaller image.');
-      return;
-    }
-
+    // Load file into an image
     const reader = new FileReader();
-    reader.onloadend = () => {
-      setPreviewPhoto(reader.result);
-      setProfilePhoto(reader.result);
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onload = () => {
+        // Compress image using canvas
+        const canvas = document.createElement('canvas');
+        const MAX_WIDTH = 500;
+        const MAX_HEIGHT = 500;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > MAX_WIDTH) {
+            height *= MAX_WIDTH / width;
+            width = MAX_WIDTH;
+          }
+        } else {
+          if (height > MAX_HEIGHT) {
+            width *= MAX_HEIGHT / height;
+            height = MAX_HEIGHT;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+
+        // Compress to JPEG with 0.8 quality
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+        setPreviewPhoto(dataUrl);
+        setProfilePhoto(dataUrl);
+      };
+      img.src = event.target.result;
     };
     reader.readAsDataURL(file);
   };
@@ -79,7 +107,7 @@ function Settings() {
     setIsSavingProfile(true);
 
     try {
-      const payload = { name, email };
+      const payload = { name, email, username };
       // Only send photo if it changed
       if (profilePhoto !== previewPhoto || profilePhoto !== null) {
         payload.profilePhoto = profilePhoto;
@@ -191,7 +219,7 @@ function Settings() {
               onClick={() => fileInputRef.current?.click()}
               className="text-xs font-semibold text-[var(--accent)] hover:text-[var(--text)] transition"
             >
-              Change photo (max 200KB)
+              Change photo
             </button>
             <input
               ref={fileInputRef}
@@ -212,6 +240,21 @@ function Settings() {
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
+              className="mt-2 w-full rounded-2xl border border-[var(--line)] bg-[var(--surface)] px-4 py-3 text-sm text-[var(--text)] outline-none transition focus:border-[var(--accent)]"
+            />
+          </div>
+
+          {/* Username */}
+          <div className="mb-5">
+            <label className="block text-sm font-semibold text-[var(--muted)]" htmlFor="settings-username">
+              Username <span className="text-xs font-normal text-gray-500">(Optional, e.g. instagram handle)</span>
+            </label>
+            <input
+              id="settings-username"
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="e.g. theomprajapati"
               className="mt-2 w-full rounded-2xl border border-[var(--line)] bg-[var(--surface)] px-4 py-3 text-sm text-[var(--text)] outline-none transition focus:border-[var(--accent)]"
             />
           </div>
