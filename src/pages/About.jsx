@@ -62,8 +62,10 @@ const MarkdownRenderer = ({ children }) => (
 function About() {
   const [aboutPage, setAboutPage] = useState(defaultSiteContent.aboutPage);
   const [loading, setLoading] = useState(true);
+  const [skillsAnimated, setSkillsAnimated] = useState(false);
 
   useEffect(() => {
+    // Fetch data
     apiFetch('/site-content', { suppressToast: true })
       .then((data) => {
         if (data && data.aboutPage) {
@@ -72,6 +74,10 @@ function About() {
       })
       .catch(() => {})
       .finally(() => setLoading(false));
+
+    // Trigger skill bars animation after component mounts
+    const timer = setTimeout(() => setSkillsAnimated(true), 500);
+    return () => clearTimeout(timer);
   }, []);
 
   if (!aboutPage) return null;
@@ -280,7 +286,7 @@ function About() {
           <div className="shell">
             <SectionHeading eyebrow="Expertise" title={aboutPage.skills?.title || "Technical Skills"} align="center" />
             
-            <div className="mt-16 grid gap-8 md:grid-cols-2 xl:grid-cols-3 items-start">
+            <div className="mt-16 columns-1 md:columns-2 xl:columns-3 gap-8">
               {(aboutPage.skills?.categories || []).map((category, i) => {
                 // Cycle through neon glow classes matching theme (Amber & Blue)
                 const glowClasses = ['neon-glow-cyan', 'neon-glow-purple'];
@@ -291,7 +297,7 @@ function About() {
                 const colorVar = colorVars[i % colorVars.length];
 
                 return (
-                  <div key={category.name} className={`neon-card ${glowClass} p-8`} data-aos="fade-up" data-aos-delay={(i % 3) * 100}>
+                  <div key={category.name} className={`neon-card ${glowClass} p-8 mb-8 break-inside-avoid`} data-aos="fade-up" data-aos-delay={(i % 3) * 100}>
                     <h3 className={`text-xl font-black text-[var(--text)] mb-8 flex items-center gap-3 ${textClass}`}>
                       <span className="p-2 bg-[var(--surface-2)] rounded-lg shadow-inner border border-[var(--line)]">
                         <Code style={{ color: colorVar }} size={22} />
@@ -307,9 +313,9 @@ function About() {
                           </div>
                           <div className="h-2 w-full bg-[var(--surface-3)] rounded-full overflow-hidden shadow-inner">
                             <div 
-                              className="h-full rounded-full transition-all duration-[1.5s] ease-out relative overflow-hidden"
+                              className="h-full rounded-full transition-all duration-1000 ease-out relative overflow-hidden"
                               style={{ 
-                                width: `${skill.percentage}%`, 
+                                width: skillsAnimated ? `${skill.percentage}%` : '0%', 
                                 background: `linear-gradient(90deg, ${colorVar}, transparent)`,
                                 backgroundColor: colorVar
                               }}
